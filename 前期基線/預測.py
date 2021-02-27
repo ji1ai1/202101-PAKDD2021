@@ -1,10 +1,23 @@
+#python 3.9.2
+#python套件 lightgbm 3.1.1
+#python套件 numpy 1.20.1
+#python套件 pandas 1.2.2
+#輸入：
+#	data/cust_avli_Q1.csv
+#	data/y_Q*_3.csv
+#	data/cust_info_q*.csv
+#	data/aum_m*.csv
+#	data/behavior_m*.csv
+#	data/cunkuan_m*.csv
+#輸出：
+#	result.csv
+#	result.zip
+#
 import datetime
 import gc
 import lightgbm
 import multiprocessing
 import pandas
-import pickle
-import sklearn.metrics
 import zipfile
 
 訓練起始秒序 = -120 * 86400
