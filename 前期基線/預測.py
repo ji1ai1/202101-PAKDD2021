@@ -145,7 +145,14 @@ if __name__ == "__main__":
 
 
 
-	預測表 = 預測打分表.loc[預測打分表.預測打分 > 0.35].drop_duplicates(ignore_index=True)
+	原始預測表 = 預測打分表.loc[預測打分表.預測打分 > 0.5].sort_values("預測秒序", ignore_index=True)
+	預測秒序字典 = {}
+	預測表 = None
+	for 乙, 乙元組 in enumerate(原始預測表.itertuples()):
+		乙標識 = "%s_%s_%s" % (乙元組.序列號, 乙元組.生產商, 乙元組.賣方)
+		if 乙標識 not in 預測秒序字典 or 乙元組.預測秒序 - 預測秒序字典[乙標識] > 7 * 86400:
+			預測表 = pandas.concat([預測表, 原始預測表[乙:(1 + 乙)]], ignore_index=True)
+			預測秒序字典[乙標識] = 乙元組.預測秒序
 	print(str(datetime.datetime.now()) + "\t已生成%d列預測！" % len(預測打分表))
 
 	提交表 = 預測表.loc[:, ["序列號"]]
