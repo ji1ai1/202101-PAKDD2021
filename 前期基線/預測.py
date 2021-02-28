@@ -3,12 +3,11 @@
 #python套件 numpy 1.20.1
 #python套件 pandas 1.2.2
 #輸入：
-#	data/cust_avli_Q1.csv
-#	data/y_Q*_3.csv
-#	data/cust_info_q*.csv
-#	data/aum_m*.csv
-#	data/behavior_m*.csv
-#	data/cunkuan_m*.csv
+#	memory_sample_mce_log_round1_a_train.csv
+#	memory_sample_mce_log_round1_a_test.csv
+#	memory_sample_kernel_log_round1_a_train.csv
+#	memory_sample_kernel_log_round1_a_test.csv
+#	memory_sample_failure_tag_round1_a_train.csv
 #輸出：
 #	result.csv
 #	result.zip
