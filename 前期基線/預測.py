@@ -24,7 +24,7 @@ import zipfile
 測試起始秒序 = 0 * 86400
 測試終止秒序 = 30 * 86400
 處理緒數 = 16
-粒度 = 240
+片長 = 240
 特征窗口長度 = 480
 
 
@@ -93,19 +93,19 @@ if __name__ == "__main__":
 
 	訓練故障日誌表 = pandas.read_csv("memory_sample_failure_tag_round1_a_train.csv", header=0, names=["序列號", "故障時間", "故障類型", "生產商", "賣方"])
 	訓練故障日誌表["故障秒序"] = [(datetime.datetime.strptime(子, "%Y-%m-%d %H:%M:%S") - datetime.datetime.strptime("20190601", "%Y%m%d")).total_seconds() for 子 in 訓練故障日誌表.故障時間]
-			
-	訓練日誌表分割字典 = {子[0]:子[1] for 子 in 訓練日誌表.groupby(訓練日誌表.收集秒序 // 粒度)}
-	訓練內核日誌表分割字典 = {子[0]:子[1] for 子 in 訓練內核日誌表.groupby(訓練內核日誌表.收集秒序 // 粒度)}
+	
+	訓練日誌表分割字典 = {子[0]:子[1] for 子 in 訓練日誌表.groupby(訓練日誌表.收集秒序 // 片長)}
+	訓練內核日誌表分割字典 = {子[0]:子[1] for 子 in 訓練內核日誌表.groupby(訓練內核日誌表.收集秒序 // 片長)}
 
 	print(str(datetime.datetime.now()) + "\t匯入完畢！")
 	
 	池 = multiprocessing.Pool(處理緒數)
 	結果 = []
-	for 甲秒序 in range(訓練起始秒序, 訓練終止秒序, 粒度):
-		甲分序 = [甲秒序 // 粒度 - 1 - 子 for 子 in range(特征窗口長度 // 粒度)]
+	for 甲秒序 in range(訓練起始秒序, 訓練終止秒序, 片長):
+		甲選中片序 = [甲秒序 // 片長 - 1 - 子 for 子 in range(特征窗口長度 // 片長)]
 		結果 += [池.apply_async(取得訓練資料表, (
-			pandas.concat([訓練日誌表分割字典[子] for 子 in 甲分序 if 子 in 訓練日誌表分割字典], ignore_index=True)
-			, pandas.concat([訓練內核日誌表分割字典[子] for 子 in 甲分序 if 子 in 訓練內核日誌表分割字典], ignore_index=True)
+			pandas.concat([訓練日誌表分割字典[子] for 子 in 甲選中片序 if 子 in 訓練日誌表分割字典], ignore_index=True)
+			, pandas.concat([訓練內核日誌表分割字典[子] for 子 in 甲選中片序 if 子 in 訓練內核日誌表分割字典], ignore_index=True)
 			, 訓練故障日誌表
 			, 甲秒序
 		))]
@@ -123,11 +123,11 @@ if __name__ == "__main__":
 	
 	池 = multiprocessing.Pool(處理緒數)
 	結果 = []
-	for 甲秒序 in range(測試起始秒序, 測試終止秒序, 粒度):
-		甲分序 = [甲秒序 // 粒度 - 1 - 子 for 子 in range(特征窗口長度 // 粒度)]
+	for 甲秒序 in range(測試起始秒序, 測試終止秒序, 片長):
+		甲選中片序 = [甲秒序 // 片長 - 1 - 子 for 子 in range(特征窗口長度 // 片長)]
 		結果 += [池.apply_async(取得測試資料表, (
-			pandas.concat([訓練日誌表分割字典[子] for 子 in 甲分序 if 子 in 訓練日誌表分割字典], ignore_index=True)
-			, pandas.concat([訓練內核日誌表分割字典[子] for 子 in 甲分序 if 子 in 訓練內核日誌表分割字典], ignore_index=True)
+			pandas.concat([訓練日誌表分割字典[子] for 子 in 甲選中片序 if 子 in 訓練日誌表分割字典], ignore_index=True)
+			, pandas.concat([訓練內核日誌表分割字典[子] for 子 in 甲選中片序 if 子 in 訓練內核日誌表分割字典], ignore_index=True)
 			, 甲秒序
 		))]
 		
