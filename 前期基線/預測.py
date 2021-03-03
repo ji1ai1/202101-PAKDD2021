@@ -79,7 +79,8 @@ if __name__ == "__main__":
 		pandas.read_csv("memory_sample_mce_log_round1_a_train.csv", header=0, names=["序列號", "機器檢查架構", "事務", "收集時間", "生產商", "賣方"])
 		, pandas.read_csv("memory_sample_mce_log_round1_a_test.csv", header=0, names=["序列號", "機器檢查架構", "事務", "收集時間", "生產商", "賣方"])
 	], ignore_index=True)
-	訓練日誌表["收集秒序"] = [(datetime.datetime.strptime(子, "%Y-%m-%d %H:%M:%S") - datetime.datetime.strptime("20190601", "%Y%m%d")).total_seconds() for 子 in 訓練日誌表.收集時間]
+	#下面這條語句，將時間轉化爲秒序，我原本傻乎乎地用for循環遍歷轉化的，需要很久很久；xtzd同學指導我用下面這樣的寫法，現在可以秒出結果。
+	訓練日誌表["收集秒序"] = (pandas.to_datetime(訓練日誌表["收集時間"]) - datetime.datetime.strptime("20190601", "%Y%m%d")).dt.total_seconds()
 	for 甲 in ["Z", "AP", "G", "F", "BB", "E", "CC", "AF", "AE"]:
 		訓練日誌表["機器檢查架構%s" % 甲] = (訓練日誌表.機器檢查架構 == 甲).astype("float")
 	for 甲 in [0, 1, 2, 3]:
@@ -89,10 +90,10 @@ if __name__ == "__main__":
 		pandas.read_csv("memory_sample_kernel_log_round1_a_train.csv", header=0, names=["收集時間"] + ["列%d" % 子 for 子 in range(24)] + ["序列號", "生產商", "賣方"])
 		, pandas.read_csv("memory_sample_kernel_log_round1_a_test.csv", header=0, names=["收集時間"] + ["列%d" % 子 for 子 in range(24)] + ["序列號", "生產商", "賣方"])
 	], ignore_index=True)
-	訓練內核日誌表["收集秒序"] = [(datetime.datetime.strptime(子, "%Y-%m-%d %H:%M:%S") - datetime.datetime.strptime("20190601", "%Y%m%d")).total_seconds() for 子 in 訓練內核日誌表.收集時間]
-
+	訓練內核日誌表["收集秒序"] = (pandas.to_datetime(訓練內核日誌表["收集時間"]) - datetime.datetime.strptime("20190601", "%Y%m%d")).dt.total_seconds()
+	
 	訓練故障日誌表 = pandas.read_csv("memory_sample_failure_tag_round1_a_train.csv", header=0, names=["序列號", "故障時間", "故障類型", "生產商", "賣方"])
-	訓練故障日誌表["故障秒序"] = [(datetime.datetime.strptime(子, "%Y-%m-%d %H:%M:%S") - datetime.datetime.strptime("20190601", "%Y%m%d")).total_seconds() for 子 in 訓練故障日誌表.故障時間]
+	訓練故障日誌表["故障秒序"] = (pandas.to_datetime(訓練故障日誌表["故障時間"]) - datetime.datetime.strptime("20190601", "%Y%m%d")).dt.total_seconds()
 	
 	訓練日誌表分割字典 = {子[0]:子[1] for 子 in 訓練日誌表.groupby(訓練日誌表.收集秒序 // 片長)}
 	訓練內核日誌表分割字典 = {子[0]:子[1] for 子 in 訓練內核日誌表.groupby(訓練內核日誌表.收集秒序 // 片長)}
