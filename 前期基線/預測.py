@@ -1,16 +1,20 @@
-#python 3.9.2
-#python套件 lightgbm 3.1.1
-#python套件 numpy 1.20.1
-#python套件 pandas 1.2.2
-#輸入：
+# python 3.9.2
+# python套件 lightgbm 3.1.1
+# python套件 numpy 1.20.1
+# python套件 pandas 1.2.2
+# 
+# 輸入：
 #	memory_sample_mce_log_round1_a_train.csv
 #	memory_sample_mce_log_round1_a_test.csv
 #	memory_sample_kernel_log_round1_a_train.csv
 #	memory_sample_kernel_log_round1_a_test.csv
 #	memory_sample_failure_tag_round1_a_train.csv
-#輸出：
+#
+# 輸出：
 #	result.csv
 #	result.zip
+#
+# 0.45
 #
 import datetime
 import gc
