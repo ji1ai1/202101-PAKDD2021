@@ -121,7 +121,8 @@ if __name__ == "__main__":
 	print(str(datetime.datetime.now()) + "\t已生成%d列訓練資料！" % len(訓練資料表))
 
 	輕模型 = lightgbm.train(train_set=lightgbm.Dataset(訓練資料表.iloc[:, 5:], label=訓練資料表.標籤)
-		, num_boost_round=500, params={"objective": "binary", "learning_rate": 0.05, "max_depth": 6, "num_leaves": 127, "verbose": -1})
+		, num_boost_round=500, params={"objective": "binary", "learning_rate": 0.05, "max_depth": 6, "num_leaves": 127, "verbose": -1}
+	)
 
 	
 	
